@@ -1,0 +1,6 @@
+git init
+git remote add origin https://github.com/Anshu2Upadhyay/day-14_b.git
+git pull origin main
+
+npm init -y
+npm install express
