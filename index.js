@@ -1,51 +1,84 @@
-const express = require('express')
+const express = require("express")
+
 const app = express();
 
-let  students = [
-    {id: 1, name: "John Doe", city: "Gorakhpur"},
-    {id: 2, name: "Jane Smith", city: "Lucknow"},
+let students = [
+    { id: 1, name: "Nirmal", city: "Gorakhpur" },
+    { id: 2, name: "Sachin", city: "GKP" }
 ];
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("Welcome to the Student API");
+    res.send("API IS RUNNING");
 });
 
+// Data Retrieve
 app.get("/students", (req, res) => {
     res.json({
-        message: "List of students",
+        message: "All Students",
         data: students
     });
 });
-app.post("/students", (req,res)=>{
-    const { id , name, city } = req.body;
-    const newStudent = { id, name, city };
-    students.push(newStudent);
-    res.json({
-        message: "Student added successfully",
-        data: newStudent
-    });
-});
-// data update
-
-app.put("/students/:id", (req, res) => {
-    // const studentId = parseInt(req.params.id);
-    const {id} = req.params;
-    const student = students.find(s => s.id === (id));
+app.get("/students/:id", (req, res) => {
+    const id = req.params.id;
+    const student = students.find(s => s.id == id);
     if (!student) {
-        return res.status(404).json({ message: "Student not found" });
+        return res.status(404).json({
+            message: "Student Not Found"
+        });
     }
 
-    student.name = req.body.namme;
-    student.city = req.body.city;
     res.json({
-        message: "Student updated successfully",
+        message: "Student Found",
         data: student
     });
 });
+// Data Store
+app.post("/students", (req, res) => {
+    const { id, name, city } = req.body;
+    const newStudent = { id, name, city };
+    students.push(newStudent);
+    res.json({
+        message: "Record Added",
+        student: newStudent,
+        data: students
+    })
+});
 
+// Data Update
+app.put("/students/:id", (req, res) => {
+    // const id = req.params.id;
+    const { id } = req.params;
+    const student = students.find(s => s.id == id);
+    // if student found = value....
+    if (!student) {
+        return res.status(404).json({
+            message: "Student Not Found"
+        });
+    }
+    student.name = req.body.name;
+    student.city = req.body.city;
 
+    res.json({
+        message: "Record updated",
+        student
+    });
+});
+
+app.delete("/students/:id", (req, res) => {
+    const id = req.params.id;
+    const student = students.find(s => s.id == id);
+    if (!student) {
+        return res.status(404).json({ message: "Invalid ID" });
+    }
+
+    students = students.filter(s => s.id != id);
+    res.json({
+        message:"Record Deleted",
+        students
+    })
+});
 app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+    console.log("Server Started");
 });
